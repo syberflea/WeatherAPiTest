@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request
 import openmeteo_requests
 import requests_cache
 from retry_requests import retry
@@ -7,9 +7,33 @@ from geopy.geocoders import Nominatim
 bp = Blueprint("pages", __name__)
 
 
-@bp.route("/")
+@bp.route("/", methods=['GET', 'POST'])
 def home():
-    get_weather()
+    if request.method == 'POST':
+        city_name = request.form.get('city')
+        # user_id = 1
+        # Сохраняем или обновляем информацию о городе в БД
+        # city = City.query.filter_by(name=city_name, user_id=user_id).first()
+        # if city:
+        #     city.search_count += 1
+        # else:
+        #     city = City(name=city_name, user_id=user_id, search_count=1)
+        #     db.session.add(city)
+        # db.session.commit()
+
+        # Запрос к API погоды
+        response = get_weather(city_name)
+        current = response.Current()
+        current_temperature_2m = current.Variables(0).Value()
+        current_apparent_temperature = current.Variables(1).Value()
+        current_wind_speed_10m = current.Variables(2).Value()
+        weather_data = {
+            'city': city_name,
+            'temperature': f'{current_temperature_2m:.1f}',
+            'apparent_temperature': f'{current_apparent_temperature:.1f}',
+            'wind_speed_10m': f'{current_wind_speed_10m:.1f}'
+        }
+        return render_template('home.html', weather=weather_data)
     return render_template("home.html")
 
 
@@ -26,14 +50,13 @@ def get_weather(city=None):
     location = geolocator.geocode(city)
     url = "https://api.open-meteo.com/v1/forecast"
     params = {
-        "latitude": 52.52,
-        "longitude": 13.41,
+        "latitude": location.latitude,
+        "longitude": location.longitude,
         "current": ["temperature_2m", "apparent_temperature", "wind_speed_10m"],
         "wind_speed_unit": "ms",
     }
     responses = openmeteo.weather_api(url, params=params)
     response = responses[0]
-    print(response)
     print(f"Coordinates {response.Latitude()}°N {response.Longitude()}°E")
     print(f"Elevation {response.Elevation()} m asl")
     print(f"Timezone {response.Timezone()} {response.TimezoneAbbreviation()}")
@@ -49,5 +72,4 @@ def get_weather(city=None):
     print(f"Current temperature_2m {current_temperature_2m}")
     print(f"Current apparent_temperature {current_apparent_temperature}")
     print(f"Current wind_speed_10m {current_wind_speed_10m}")
-    # .json() if response.status_code == 200 else {}
     return response

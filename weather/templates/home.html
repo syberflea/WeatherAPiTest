@@ -14,7 +14,8 @@
     {% if weather %}
         <h2>Прогноз погоды для {{ weather['city'] }}</h2>
         <p>Температура: {{ weather['temperature'] }} °C</p>
-        <p>Описание: {{ weather['description'] }}</p>
+        <p>Ощущается как: {{ weather['apparent_temperature'] }}</p>
+        <p>Ветер, м/с: {{ weather['wind_speed_10m'] }}</p>
     {% endif %}
   </p>
 {% endblock content %}
