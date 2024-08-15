@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h2>{% block title %}Прогноз погоды для {{ weather['city'] }}{% endblock title %}</h2>
+{% endblock header %}
+{% block content %}
+{% if weather %}
+    <article>
+        <p>Температура: {{ weather['temperature'] }} °C</p>
+        <p>Ощущается как: {{ weather['apparent_temperature'] }}</p>
+        <p>Ветер, м/с: {{ weather['wind_speed_10m'] }}</p>
+    </article>
+{% endif %}
+{% endblock content %}

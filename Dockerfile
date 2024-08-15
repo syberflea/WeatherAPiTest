@@ -14,4 +14,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 5000
 
 # Команда для запуска приложения
-CMD ["python", "app.py"]
+CMD ["python", "-m flask --app weather run --port 8000"]
