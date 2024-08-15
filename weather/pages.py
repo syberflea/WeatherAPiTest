@@ -3,6 +3,7 @@ import openmeteo_requests
 import requests_cache
 from retry_requests import retry
 from geopy.geocoders import Nominatim
+from .models import db, City
 
 bp = Blueprint("pages", __name__)
 
@@ -11,15 +12,15 @@ bp = Blueprint("pages", __name__)
 def home():
     if request.method == 'POST':
         city_name = request.form.get('city')
-        # user_id = 1
+        user_id = 1
         # Сохраняем или обновляем информацию о городе в БД
-        # city = City.query.filter_by(name=city_name, user_id=user_id).first()
-        # if city:
-        #     city.search_count += 1
-        # else:
-        #     city = City(name=city_name, user_id=user_id, search_count=1)
-        #     db.session.add(city)
-        # db.session.commit()
+        city = City.query.filter_by(name=city_name, user_id=user_id).first()
+        if city:
+            city.search_count += 1
+        else:
+            city = City(name=city_name, user_id=user_id, search_count=1)
+            db.session.add(city)
+        db.session.commit()
 
         # Запрос к API погоды
         response = get_weather(city_name)

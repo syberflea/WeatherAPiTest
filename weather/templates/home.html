@@ -5,17 +5,20 @@
 {% endblock header %}
 
 {% block content %}
-  <p>
-    <form method="POST">
-        <input type="text" name="city" placeholder="Введите название города" required>
-        <input type="submit" value="Получить погоду">
-    </form>
-    
+  <form method="POST">
+      <div class="form-group">
+        <input type="text" name="city" placeholder="Введите название города" required class="form-control">
+      </div>
+      <div class="form-group">
+        <input type="submit" value="Получить погоду" class="submit-btn">
+      </div>
+  </form>
+  <article>
     {% if weather %}
         <h2>Прогноз погоды для {{ weather['city'] }}</h2>
         <p>Температура: {{ weather['temperature'] }} °C</p>
         <p>Ощущается как: {{ weather['apparent_temperature'] }}</p>
         <p>Ветер, м/с: {{ weather['wind_speed_10m'] }}</p>
     {% endif %}
-  </p>
+  </article>
 {% endblock content %}
