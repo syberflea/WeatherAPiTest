@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request
+from flask import current_app as app
 import openmeteo_requests
 import requests_cache
 from retry_requests import retry
@@ -58,10 +59,10 @@ def get_weather(city=None):
     }
     responses = openmeteo.weather_api(url, params=params)
     response = responses[0]
-    print(f"Coordinates {response.Latitude()}°N {response.Longitude()}°E")
-    print(f"Elevation {response.Elevation()} m asl")
-    print(f"Timezone {response.Timezone()} {response.TimezoneAbbreviation()}")
-    print(f"Timezone difference to GMT+0 {response.UtcOffsetSeconds()} s")
+    app.logger.info(f"Coordinates {response.Latitude()}°N {response.Longitude()}°E")
+    app.logger.info(f"Elevation {response.Elevation()} m asl")
+    app.logger.info(f"Timezone {response.Timezone()} {response.TimezoneAbbreviation()}")
+    app.logger.info(f"Timezone difference to GMT+0 {response.UtcOffsetSeconds()} s")
 
     # Current values. The order of variables needs to be the same as requested.
     current = response.Current()
@@ -69,8 +70,8 @@ def get_weather(city=None):
     current_apparent_temperature = current.Variables(1).Value()
     current_wind_speed_10m = current.Variables(2).Value()
 
-    print(f"Current time {current.Time()}")
-    print(f"Current temperature_2m {current_temperature_2m}")
-    print(f"Current apparent_temperature {current_apparent_temperature}")
-    print(f"Current wind_speed_10m {current_wind_speed_10m}")
+    app.logger.info(f"Current time {current.Time()}")
+    app.logger.info(f"Current temperature_2m {current_temperature_2m}")
+    app.logger.info(f"Current apparent_temperature {current_apparent_temperature}")
+    app.logger.info(f"Current wind_speed_10m {current_wind_speed_10m}")
     return response
