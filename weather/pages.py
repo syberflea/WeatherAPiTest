@@ -54,15 +54,23 @@ def get_weather(city=None):
     params = {
         "latitude": location.latitude,
         "longitude": location.longitude,
-        "current": ["temperature_2m", "apparent_temperature", "wind_speed_10m"],
+        "current": [
+            "temperature_2m",
+            "apparent_temperature",
+            "wind_speed_10m"
+        ],
         "wind_speed_unit": "ms",
     }
     responses = openmeteo.weather_api(url, params=params)
     response = responses[0]
-    app.logger.info(f"Coordinates {response.Latitude()}°N {response.Longitude()}°E")
+    app.logger.info(f"Coordinates {response.Latitude()}°N"
+                    "{response.Longitude()}°E"
+                    )
     app.logger.info(f"Elevation {response.Elevation()} m asl")
-    app.logger.info(f"Timezone {response.Timezone()} {response.TimezoneAbbreviation()}")
-    app.logger.info(f"Timezone difference to GMT+0 {response.UtcOffsetSeconds()} s")
+    app.logger.info(f"Timezone {response.Timezone()}"
+                    "{response.TimezoneAbbreviation()}")
+    app.logger.info("Timezone difference to GMT+0"
+                    f"{response.UtcOffsetSeconds()} s")
 
     # Current values. The order of variables needs to be the same as requested.
     current = response.Current()
@@ -72,6 +80,7 @@ def get_weather(city=None):
 
     app.logger.info(f"Current time {current.Time()}")
     app.logger.info(f"Current temperature_2m {current_temperature_2m}")
-    app.logger.info(f"Current apparent_temperature {current_apparent_temperature}")
+    app.logger.info("Current apparent_temperature"
+                    f"{current_apparent_temperature}")
     app.logger.info(f"Current wind_speed_10m {current_wind_speed_10m}")
     return response
